@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -30,7 +32,7 @@ public class SampleTests {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		if(testLocal){
-			addresses.add("http://localhost:8080");
+			addresses.add("http://localhost/ally/index");
 		}
 		if(testProduction){
 			addresses.add("http://djp3.westmont.edu/ally/ally/");
@@ -61,67 +63,17 @@ public class SampleTests {
 	}
 	
 	@Test
-	public void testSystemUp() {
+	public void testCallSouthCountyFoodBank() throws InterruptedException {
 		
-		for(String address:addresses){
-			driver.get(address);
-        
-			assertTrue(driver.getTitle().contains("Ally"));
-		}
-	}
+			driver.get("http://localhost/ally/index");
+			
+			WebElement element = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/a"));
+			
+			JavascriptExecutor executor = (JavascriptExecutor)driver;
+			executor.executeScript("arguments[0].click();", element);
+			
+			assertTrue(driver.getPageSource().contains("tel:+1-805-967-5741"));
 
-	@Test
-	public void testGoogleCheeseQuery() {
-        // And now use this to visit Google
-        driver.get("http://www.google.com");
-        
-        // Alternatively the same thing can be done like this
-        // driver.navigate().to("http://www.google.com");
-        
-        // Check the title of the page
-        assertTrue(driver.getTitle().equals("Google"));
-
-        // Find the text input element by its name
-        WebElement element = driver.findElement(By.name("q"));
-
-        // Enter something to search for
-        element.sendKeys("Cheese!");
-
-        // Now submit the form. WebDriver will find the form for us from the element
-        element.submit();
-
-        // Wait for the page to load, timeout after 10 seconds
-        (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver d) {
-                return d.getTitle().toLowerCase().startsWith("cheese!");
-            }
-        });
-        
-        // Check the title of the page
-        assertTrue(driver.getTitle().equals("Cheese! - Google Search"));
-	}
-	
-	
-	public void testCallSouthCountyFoodBank() {
-		
-		driver.get("localhost:8080");
-		
-		for(String address:addresses){
-			driver.get(address);
-        
-			
-			driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/a")).click();
-			
-			
-			
-			//assertTrue(driver.getTitle().contains("Ally"));
-			
-			
-		}
-		
-		
-		
-		
 	}
 
 }
